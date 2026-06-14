@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Дубові бочки та діжки — Ручна робота з натурального дуба{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-9">
+                <p class="product-meta mb-3">Бондарська майстерня • З 2003 року</p>
+                <h1 class="mb-4">Дубові бочки та діжки<br>ручної роботи</h1>
+                <p class="lead mb-5 fs-5">
+                    Виготовляємо бочки для коньяку, вина, горілки та діжки для квашення
+                    з відбірного українського дуба. Кожен виріб — унікальний.
+                </p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="#" class="btn btn-warning btn-lg">
+                        Переглянути каталог
+                    </a>
+                    <a href="#" class="btn btn-hero-secondary btn-lg">
+                        Замовити свою бочку
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Преимущества -->
+<section class="advantages-section">
+    <div class="container">
+        <div class="ornament">⬥ ⬥ ⬥</div>
+        <h2 class="text-center mb-5">Чому обирають нас</h2>
+        <div class="row g-4">
+            <div class="col-md-4 text-center">
+                <i class="bi bi-tree-fill advantage-icon"></i>
+                <h4>Натуральний дуб</h4>
+                <p class="text-muted">Тільки відбірна деревина українського дуба з перевірених лісництв</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <i class="bi bi-hammer advantage-icon"></i>
+                <h4>Ручна робота</h4>
+                <p class="text-muted">Кожен виріб виготовляється майстром вручну за традиційними технологіями</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <i class="bi bi-shield-check advantage-icon"></i>
+                <h4>Гарантія якості</h4>
+                <p class="text-muted">Понад 20 років досвіду в бондарській справі та сотні задоволених клієнтів</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Последние работы -->
+{% if latest_products %}
+<section class="products-section">
+    <div class="container">
+        <div class="ornament">⬥ ⬥ ⬥</div>
+        <h2 class="text-center mb-5">Останні роботи</h2>
+        <div class="row g-4">
+            {% for product in latest_products %}
+            <div class="col-md-6 col-lg-4">
+                <div class="product-card">
+                    {% if product.main_image %}
+                        <img src="{{ product.main_image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    {% endif %}
+                    <div class="card-body p-4">
+                        <p class="product-meta">
+                            {{ product.get_product_type_display }} • {{ product.get_purpose_display }} • {{ product.size_liters }}л
+                        </p>
+                        <h4 class="card-title mb-3">{{ product.name }}</h4>
+                        <p class="product-price">{{ product.price }} ₴</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

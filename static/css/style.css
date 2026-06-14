@@ -1,0 +1,235 @@
+/* ============================================================
+   Палітра A — Витриманий коньяк
+   ============================================================ */
+:root {
+    --color-cream: #F5EFE4;
+    --color-cream-light: #FBF7EF;
+    --color-cream-dark: #EBE2D0;
+    --color-gold: #C9A961;
+    --color-gold-dark: #A88B47;
+    --color-cognac: #B8651A;
+    --color-cognac-dark: #8E4C12;
+    --color-oak: #4A2F1A;
+    --color-oak-dark: #2C1810;
+    --color-text: #2C1810;
+    --color-text-muted: #6B5A47;
+}
+
+/* ============================================================
+   Типографіка
+   ============================================================ */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--color-cream);
+    color: var(--color-text);
+    line-height: 1.7;
+}
+
+h1, h2, h3, h4, h5, h6,
+.display-1, .display-2, .display-3, .display-4, .display-5 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    color: var(--color-oak-dark);
+    letter-spacing: -0.01em;
+}
+
+.navbar-brand {
+    font-family: 'Playfair Display', serif !important;
+    font-size: 1.5rem !important;
+    font-weight: 700;
+}
+
+.lead {
+    color: var(--color-text-muted);
+    font-weight: 400;
+}
+
+/* ============================================================
+   Навігація
+   ============================================================ */
+.navbar-dark.bg-dark {
+    background-color: var(--color-oak-dark) !important;
+    border-bottom: 3px solid var(--color-gold);
+}
+
+.navbar-brand {
+    color: var(--color-gold) !important;
+}
+
+.navbar-dark .nav-link {
+    color: var(--color-cream) !important;
+    transition: color 0.2s ease;
+    font-weight: 500;
+}
+
+.navbar-dark .nav-link:hover {
+    color: var(--color-gold) !important;
+}
+
+/* ============================================================
+   Кнопки
+   ============================================================ */
+.btn-warning {
+    background-color: var(--color-cognac);
+    border-color: var(--color-cognac);
+    color: #fff !important;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn-warning:hover {
+    background-color: var(--color-cognac-dark);
+    border-color: var(--color-cognac-dark);
+    color: #fff !important;
+    transform: translateY(-1px);
+}
+
+.btn-outline-light {
+    border-color: var(--color-cream);
+    color: var(--color-cream);
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+}
+
+.btn-outline-light:hover {
+    background-color: var(--color-gold);
+    border-color: var(--color-gold);
+    color: var(--color-oak-dark) !important;
+}
+
+/* ============================================================
+   Hero секція
+   ============================================================ */
+.hero {
+    background-color: var(--color-cream-light);
+    background-image:
+        radial-gradient(circle at 20% 50%, rgba(201, 169, 97, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(184, 101, 26, 0.06) 0%, transparent 50%);
+    padding: 6rem 0;
+    position: relative;
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+}
+
+.hero h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.1;
+}
+
+/* ============================================================
+   Секція переваг
+   ============================================================ */
+.advantages-section {
+    background-color: var(--color-cream);
+    padding: 5rem 0;
+}
+
+.advantage-icon {
+    color: var(--color-cognac);
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+/* ============================================================
+   Картки товарів
+   ============================================================ */
+.products-section {
+    background-color: var(--color-cream-dark);
+    padding: 5rem 0;
+}
+
+.product-card {
+    background-color: var(--color-cream-light);
+    border: 1px solid var(--color-cream-dark);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(44, 24, 16, 0.12);
+    border-color: var(--color-gold);
+}
+
+.product-card .card-img-top {
+    height: 280px;
+    object-fit: cover;
+}
+
+.product-card .card-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--color-oak-dark);
+}
+
+.product-meta {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.product-price {
+    color: var(--color-cognac);
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+footer.bg-dark {
+    background-color: var(--color-oak-dark) !important;
+    color: var(--color-cream);
+    border-top: 3px solid var(--color-gold);
+}
+
+footer h5 {
+    color: var(--color-gold);
+    font-family: 'Playfair Display', serif;
+}
+
+footer .text-muted {
+    color: var(--color-cream-dark) !important;
+}
+
+/* ============================================================
+   Декоративний орнамент
+   ============================================================ */
+.ornament {
+    text-align: center;
+    margin: 2rem 0;
+    color: var(--color-gold);
+    font-size: 1.5rem;
+    letter-spacing: 1rem;
+}
+/* ============================================================
+   Hero secondary button (Замовити свою бочку)
+   ============================================================ */
+.btn-hero-secondary {
+    border: 2px solid var(--color-oak);
+    color: white;
+    background-color: var(--color-text-muted);
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn-hero-secondary:hover {
+    background-color: var(--color-oak);
+    border-color: var(--color-oak);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
