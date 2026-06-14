@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}Каталог — Дубові бочки та діжки{% endblock %}
+
+{% block content %}
+
+<!-- Заголовок страницы -->
+<section style="background-color: var(--color-cream-light); padding: 4rem 0 3rem;">
+    <div class="container text-center">
+        <p class="product-meta mb-2">Наш каталог</p>
+        <h1 class="display-4 mb-3">Бочки та діжки</h1>
+        <p class="lead mb-0">Знайдено виробів: {{ total_count }}</p>
+    </div>
+</section>
+
+<!-- Фільтри -->
+<section style="background-color: var(--color-cream-dark); padding: 1.5rem 0; border-bottom: 1px solid rgba(74, 47, 26, 0.1);">
+    <div class="container">
+        <form method="get" id="filter-form" class="row g-3 align-items-center">
+            
+            <!-- Тип товара -->
+            <div class="col-md-4">
+                <label class="form-label small text-muted mb-1">ТИП</label>
+                <div class="btn-group w-100" role="group">
+                    <a href="{% url 'catalog' %}" class="btn {% if not current_type %}btn-warning{% else %}btn-outline-secondary{% endif %}">Все</a>
+                    <a href="?type=barrel" class="btn {% if current_type == 'barrel' %}btn-warning{% else %}btn-outline-secondary{% endif %}">Бочки</a>
+                    <a href="?type=dizhka" class="btn {% if current_type == 'dizhka' %}btn-warning{% else %}btn-outline-secondary{% endif %}">Діжки</a>
+                </div>
+            </div>
+            
+            <!-- Призначення -->
+            <div class="col-md-4">
+                <label for="purpose" class="form-label small text-muted mb-1">ПРИЗНАЧЕННЯ</label>
+                <select name="purpose" id="purpose" class="form-select" onchange="document.getElementById('filter-form').submit()">
+                    <option value="">Всі призначення</option>
+                    {% for value, label in available_purposes %}
+                        <option value="{{ value }}" {% if current_purpose == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                <input type="hidden" name="type" value="{{ current_type }}">
+            </div>
+            
+            <!-- Сортировка -->
+            <div class="col-md-4">
+                <label for="sort" class="form-label small text-muted mb-1">СОРТУВАННЯ</label>
+                <select name="sort" id="sort" class="form-select" onchange="document.getElementById('filter-form').submit()">
+                    <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Спочатку нові</option>
+                    <option value="price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>Ціна: за зростанням</option>
+                    <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Ціна: за спаданням</option>
+                    <option value="size_asc" {% if current_sort == 'size_asc' %}selected{% endif %}>Об'єм: за зростанням</option>
+                    <option value="size_desc" {% if current_sort == 'size_desc' %}selected{% endif %}>Об'єм: за спаданням</option>
+                </select>
+            </div>
+            
+        </form>
+    </div>
+</section>
+
+<!-- Список товаров -->
+<section style="background-color: var(--color-cream); padding: 4rem 0;">
+    <div class="container">
+        
+        {% if page_obj %}
+        <div class="row g-4">
+            {% for product in page_obj %}
+            <div class="col-md-6 col-lg-4">
+                <a href="{% url 'product_detail' product.pk %}" class="text-decoration-none">
+                    <div class="product-card">
+                        {% if product.main_image %}
+                            <img src="{{ product.main_image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        {% endif %}
+                        <div class="card-body p-4">
+                            <p class="product-meta">
+                                {{ product.get_product_type_display }} • {{ product.get_purpose_display }} • {{ product.size_liters }}л
+                            </p>
+                            <h4 class="card-title mb-3">{{ product.name }}</h4>
+                            <p class="product-price mb-0">{{ product.price }} ₴</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Пагінація -->
+        {% if page_obj.has_other_pages %}
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if current_type %}&type={{ current_type }}{% endif %}{% if current_purpose %}&purpose={{ current_purpose }}{% endif %}&sort={{ current_sort }}">←</a>
+                    </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if num == page_obj.number %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}{% if current_type %}&type={{ current_type }}{% endif %}{% if current_purpose %}&purpose={{ current_purpose }}{% endif %}&sort={{ current_sort }}">{{ num }}</a>
+                    </li>
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if current_type %}&type={{ current_type }}{% endif %}{% if current_purpose %}&purpose={{ current_purpose }}{% endif %}&sort={{ current_sort }}">→</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        
+        {% else %}
+        <div class="text-center py-5">
+            <p class="lead text-muted">За вашими фільтрами нічого не знайдено.</p>
+            <a href="{% url 'catalog' %}" class="btn btn-warning mt-3">Скинути фільтри</a>
+        </div>
+        {% endif %}
+        
+    </div>
+</section>
+
+{% endblock %}

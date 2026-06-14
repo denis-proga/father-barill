@@ -233,3 +233,41 @@ footer .text-muted {
     color: #ffffff;
     transform: translateY(-1px);
 }
+/* ============================================================
+   Пагінація
+   ============================================================ */
+.pagination .page-link {
+    background-color: var(--color-cream-light);
+    border-color: var(--color-cream-dark);
+    color: var(--color-oak);
+    margin: 0 0.25rem;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--color-cognac);
+    border-color: var(--color-cognac);
+    color: #fff;
+}
+
+.pagination .page-link:hover {
+    background-color: var(--color-gold);
+    border-color: var(--color-gold);
+    color: var(--color-oak-dark);
+}
+
+/* ============================================================
+   Кнопки фільтрів
+   ============================================================ */
+.btn-outline-secondary {
+    border-color: var(--color-oak);
+    color: var(--color-oak);
+    background-color: transparent;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--color-oak);
+    border-color: var(--color-oak);
+    color: #fff;
+}

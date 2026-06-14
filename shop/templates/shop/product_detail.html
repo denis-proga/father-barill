@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} — Дубові бочки{% endblock %}
+
+{% block content %}
+
+<!-- Хлібні крихти -->
+<section style="background-color: var(--color-cream-light); padding: 1.5rem 0;">
+    <div class="container">
+        <nav style="font-size: 0.9rem;">
+            <a href="{% url 'home' %}" style="color: var(--color-text-muted);">Головна</a>
+            <span style="color: var(--color-text-muted);"> / </span>
+            <a href="{% url 'catalog' %}" style="color: var(--color-text-muted);">Каталог</a>
+            <span style="color: var(--color-text-muted);"> / </span>
+            <span style="color: var(--color-text);">{{ product.name }}</span>
+        </nav>
+    </div>
+</section>
+
+<!-- Основная информация -->
+<section style="background-color: var(--color-cream); padding: 4rem 0;">
+    <div class="container">
+        <div class="row g-5">
+
+            <!-- Галерея фото -->
+            <div class="col-lg-7">
+                <div class="mb-3" style="background-color: var(--color-cream-light); border-radius: 4px; overflow: hidden; padding: 2rem;">
+                    <img src="{{ product.main_image.url }}" alt="{{ product.name }}" id="main-photo" style="width: 100%; height: 500px; object-fit: contain;">
+                </div>
+
+                {% if product.images.all %}
+                <div class="row g-2">
+                    <div class="col-3">
+                        <img src="{{ product.main_image.url }}"
+                             onclick="document.getElementById('main-photo').src = this.src"
+                             style="width: 100%; height: 100px; object-fit: cover; cursor: pointer; border-radius: 4px; border: 2px solid var(--color-gold);">
+                    </div>
+                    {% for img in product.images.all %}
+                    <div class="col-3">
+                        <img src="{{ img.image.url }}"
+                             onclick="document.getElementById('main-photo').src = this.src"
+                             style="width: 100%; height: 100px; object-fit: cover; cursor: pointer; border-radius: 4px;">
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Информация -->
+            <div class="col-lg-5">
+                <p class="product-meta mb-2">
+                    {{ product.get_product_type_display }} • {{ product.get_purpose_display }}
+                </p>
+                <h1 class="mb-4" style="font-size: 2.5rem;">{{ product.name }}</h1>
+
+                <div class="mb-4" style="padding: 1.5rem; background-color: var(--color-cream-light); border-radius: 4px;">
+                    <p class="product-price mb-0" style="font-size: 2.5rem;">{{ product.price }} ₴</p>
+                </div>
+
+                <table class="table mb-4" style="background: transparent;">
+                    <tbody>
+                        <tr>
+                            <td style="color: var(--color-text-muted); padding: 0.75rem 0; border-color: rgba(74, 47, 26, 0.1);">Тип виробу:</td>
+                            <td style="padding: 0.75rem 0; border-color: rgba(74, 47, 26, 0.1); text-align: right;"><strong>{{ product.get_product_type_display }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--color-text-muted); padding: 0.75rem 0; border-color: rgba(74, 47, 26, 0.1);">Призначення:</td>
+                            <td style="padding: 0.75rem 0; border-color: rgba(74, 47, 26, 0.1); text-align: right;"><strong>{{ product.get_purpose_display }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--color-text-muted); padding: 0.75rem 0; border-color: rgba(74, 47, 26, 0.1);">Об'єм:</td>
+                            <td style="padding: 0.75rem 0; border-color: rgba(74, 47, 26, 0.1); text-align: right;"><strong>{{ product.size_liters }} літрів</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--color-text-muted); padding: 0.75rem 0; border-color: rgba(74, 47, 26, 0.1);">Матеріал:</td>
+                            <td style="padding: 0.75rem 0; border-color: rgba(74, 47, 26, 0.1); text-align: right;"><strong>Натуральний дуб</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="d-grid gap-2">
+                    <button class="btn btn-warning btn-lg">
+                        <i class="bi bi-cart-plus"></i> Замовити
+                    </button>
+                    <button class="btn btn-hero-secondary btn-lg">
+                        Замовити схожу з іншими параметрами
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Опис -->
+        {% if product.description %}
+        <div class="row mt-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="ornament">⬥ ⬥ ⬥</div>
+                <h3 class="text-center mb-4">Опис</h3>
+                <p style="line-height: 1.8; font-size: 1.1rem;">{{ product.description|linebreaks }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+<!-- Похожие товары -->
+{% if related_products %}
+<section style="background-color: var(--color-cream-dark); padding: 4rem 0;">
+    <div class="container">
+        <div class="ornament">⬥ ⬥ ⬥</div>
+        <h2 class="text-center mb-5">Можливо вам сподобається</h2>
+        <div class="row g-4">
+            {% for related in related_products %}
+            <div class="col-md-4">
+                <a href="{% url 'product_detail' related.pk %}" class="text-decoration-none">
+                    <div class="product-card">
+                        {% if related.main_image %}
+                            <img src="{{ related.main_image.url }}" class="card-img-top" alt="{{ related.name }}">
+                        {% endif %}
+                        <div class="card-body p-4">
+                            <p class="product-meta">
+                                {{ related.get_product_type_display }} • {{ related.size_liters }}л
+                            </p>
+                            <h4 class="card-title mb-3">{{ related.name }}</h4>
+                            <p class="product-price mb-0">{{ related.price }} ₴</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

@@ -17,8 +17,8 @@
                     з відбірного українського дуба. Кожен виріб — унікальний.
                 </p>
                 <div class="d-flex gap-3 justify-content-center flex-wrap">
-                    <a href="#" class="btn btn-warning btn-lg">
-                        Переглянути каталог
+                   <a href="{% url 'catalog' %}" class="btn btn-warning btn-lg">
+                    Переглянути каталог
                     </a>
                     <a href="#" class="btn btn-hero-secondary btn-lg">
                         Замовити свою бочку
@@ -63,6 +63,7 @@
         <div class="row g-4">
             {% for product in latest_products %}
             <div class="col-md-6 col-lg-4">
+                <a href="{% url 'product_detail' product.pk %}" class="text-decoration-none">
                 <div class="product-card">
                     {% if product.main_image %}
                         <img src="{{ product.main_image.url }}" class="card-img-top" alt="{{ product.name }}">
@@ -75,6 +76,7 @@
                         <p class="product-price">{{ product.price }} ₴</p>
                     </div>
                 </div>
+                </a>
             </div>
             {% endfor %}
         </div>
