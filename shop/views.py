@@ -1,6 +1,12 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
 from .models import Product, ProductType, Purpose
+from django.shortcuts import redirect
+from django.contrib import messages
+from .forms import CustomOrderForm
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.conf import settings
 
 
 def home(request):
@@ -85,3 +91,40 @@ def product_detail(request, pk):
         'product': product,
         'related_products': related_products,
     })
+
+
+def custom_order(request):
+    """Конструктор индивидуального заказа."""
+    if request.method == 'POST':
+        form = CustomOrderForm(request.POST)
+        if form.is_valid():
+            order = form.save()
+
+            # Відправляємо email майстру
+            send_mail(
+                subject=f'Нове замовлення №{order.id} від {order.customer_name}',
+                message=render_to_string('shop/emails/order_to_master.txt', {'order': order}),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[settings.MASTER_EMAIL],
+                fail_silently=False,
+            )
+
+            # Відправляємо підтвердження клієнту
+            send_mail(
+                subject=f'Замовлення №{order.id} прийнято — Дубові бочки',
+                message=render_to_string('shop/emails/order_to_client.txt', {'order': order}),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[order.customer_email],
+                fail_silently=False,
+            )
+
+            return redirect('custom_order_success')
+    else:
+        form = CustomOrderForm()
+
+    return render(request, 'shop/custom_order.html', {'form': form})
+
+
+def custom_order_success(request):
+    """Страница 'Дякуємо за замовлення'."""
+    return render(request, 'shop/custom_order_success.html')

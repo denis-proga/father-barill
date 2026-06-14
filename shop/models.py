@@ -148,7 +148,7 @@ class CustomOrder(models.Model):
 
     customer_name = models.CharField(max_length=100, verbose_name='Ім\'я клієнта')
     customer_phone = models.CharField(max_length=20, verbose_name='Телефон')
-    customer_email = models.EmailField(blank=True, verbose_name='Email')
+    customer_email = models.EmailField(verbose_name='Email')
 
     product_type = models.CharField(
         max_length=10,

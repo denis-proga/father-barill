@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+
+{% block title %}Замовити свою бочку — індивідуальне замовлення{% endblock %}
+
+{% block content %}
+
+<!-- Заголовок -->
+<section style="background-color: var(--color-cream-light); padding: 4rem 0 3rem;">
+    <div class="container text-center">
+        <p class="product-meta mb-2">Індивідуальне замовлення</p>
+        <h1 class="display-4 mb-3">Замовте свою бочку</h1>
+        <p class="lead mb-0">Опишіть бажану бочку чи діжку, і ми зв'яжемося з вами для уточнення деталей</p>
+    </div>
+</section>
+
+<!-- Форма -->
+<section style="background-color: var(--color-cream); padding: 4rem 0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                
+                {% if form.errors %}
+                <div class="alert alert-danger mb-4" style="background-color: #FAECE7; border-color: #D85A30; color: #712B13;">
+                    <strong>Будь ласка, перевірте форму:</strong>
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <div>• {{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Секция 1: Что хотите? -->
+                    <div class="form-section mb-5">
+                        <h3 class="mb-4"><span class="step-num">1</span> Що ви хочете замовити?</h3>
+                        
+                        <div class="mb-4">
+                            <label for="id_product_type" class="form-label">{{ form.product_type.label }}</label>
+                            {{ form.product_type }}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="id_purpose" class="form-label">{{ form.purpose.label }}</label>
+                            {{ form.purpose }}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="id_size_liters" class="form-label">{{ form.size_liters.label }}</label>
+                            {{ form.size_liters }}
+                            <div class="form-text" id="size-hint">
+                                Популярні розміри: 5, 10, 15, 20, 30, 50, 100, 200 літрів
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Секция 2: Доп. пожелания -->
+                    <div class="form-section mb-5">
+                        <h3 class="mb-4"><span class="step-num">2</span> Особливі побажання</h3>
+                        
+                        <div class="mb-4">
+                            <label for="id_extra_wishes" class="form-label">{{ form.extra_wishes.label }}</label>
+                            {{ form.extra_wishes }}
+                            <div class="form-text">
+                                Наприклад: гравіювання, особливий обпал, термін виготовлення, доставка в певне місто
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Секция 3: Контакты -->
+                    <div class="form-section mb-5">
+                        <h3 class="mb-4"><span class="step-num">3</span> Ваші контакти</h3>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="id_customer_name" class="form-label">{{ form.customer_name.label }}</label>
+                                {{ form.customer_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_customer_phone" class="form-label">{{ form.customer_phone.label }}</label>
+                                {{ form.customer_phone }}
+                            </div>
+                            <div class="col-12">
+                                <label for="id_customer_email" class="form-label">{{ form.customer_email.label }}</label>
+                                {{ form.customer_email }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit -->
+                    <div class="text-center mt-5">
+                        <button type="submit" class="btn btn-warning btn-lg px-5">
+                            Відправити замовлення
+                        </button>
+                        <p class="text-muted mt-3 small">
+                            Ми зв'яжемося з вами протягом 24 годин для уточнення деталей
+                        </p>
+                    </div>
+                    
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.form-section {
+    background-color: var(--color-cream-light);
+    padding: 2rem;
+    border-radius: 4px;
+    border-left: 3px solid var(--color-gold);
+}
+
+.step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background-color: var(--color-cognac);
+    color: white;
+    border-radius: 50%;
+    font-family: 'Playfair Display', serif;
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.form-label {
+    color: var(--color-text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.form-text {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 0.25rem rgba(201, 169, 97, 0.25);
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Списки призначень для кожного типу
+    const PURPOSES = {
+        'barrel': {
+            'vodka': 'Горілка',
+            'wine': 'Вино',
+            'cognac': 'Коньяк',
+            'water': 'Вода',
+            'other': 'Інше'
+        },
+        'dizhka': {
+            'cabbage': 'Капуста',
+            'tomato': 'Помідори',
+            'apple': 'Яблука',
+            'cucumber': 'Огірки',
+            'other': 'Інше'
+        }
+    };
+    
+    const MAX_SIZES = {
+        'barrel': 200,
+        'dizhka': 100
+    };
+    
+    const SIZE_HINTS = {
+        'barrel': 'Популярні розміри: 5, 10, 15, 20, 30, 50, 100, 200 літрів',
+        'dizhka': 'Популярні розміри: 5, 10, 15, 20, 30, 50, 100 літрів'
+    };
+    
+    const productTypeSelect = document.getElementById('id_product_type');
+    const purposeSelect = document.getElementById('id_purpose');
+    const sizeInput = document.getElementById('id_size_liters');
+    const sizeHint = document.getElementById('size-hint');
+    
+    function updatePurposes() {
+        const type = productTypeSelect.value;
+        const currentValue = purposeSelect.value;
+        
+        // Очищаем список
+        purposeSelect.innerHTML = '<option value="">— Виберіть призначення —</option>';
+        
+        if (PURPOSES[type]) {
+            // Заполняем новыми вариантами
+            for (const [value, label] of Object.entries(PURPOSES[type])) {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = label;
+                if (value === currentValue) option.selected = true;
+                purposeSelect.appendChild(option);
+            }
+            
+            // Обновляем макс. размер и подсказку
+            sizeInput.max = MAX_SIZES[type];
+            sizeHint.textContent = SIZE_HINTS[type];
+        }
+    }
+    
+    productTypeSelect.addEventListener('change', updatePurposes);
+    
+    // При загрузке страницы — заполнить если уже выбран тип
+    if (productTypeSelect.value) {
+        updatePurposes();
+    }
+</script>
+{% endblock %}

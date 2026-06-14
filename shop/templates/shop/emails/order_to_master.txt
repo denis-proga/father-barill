@@ -1,0 +1,25 @@
+Майстре, у вас нове індивідуальне замовлення!
+
+═══════════════════════════════════════════════
+ЗАМОВЛЕННЯ №{{ order.id }}
+═══════════════════════════════════════════════
+
+КЛІЄНТ:
+  Ім'я:    {{ order.customer_name }}
+  Телефон: {{ order.customer_phone }}
+  Email:   {{ order.customer_email }}
+
+ЗАМОВЛЕННЯ:
+  Тип:        {{ order.get_product_type_display }}
+  Призначення: {{ order.get_purpose_display }}
+  Об'єм:      {{ order.size_liters }} літрів
+
+{% if order.extra_wishes %}ОСОБЛИВІ ПОБАЖАННЯ:
+{{ order.extra_wishes }}
+{% endif %}
+
+═══════════════════════════════════════════════
+Дата: {{ order.created_at|date:"d.m.Y H:i" }}
+
+Зв'яжіться з клієнтом протягом 24 годин.
+Подивитися в адмінці: http://127.0.0.1:8000/admin/shop/customorder/{{ order.id }}/change/

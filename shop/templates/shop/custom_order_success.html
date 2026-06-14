@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Дякуємо за замовлення!{% endblock %}
+
+{% block content %}
+
+<section style="background-color: var(--color-cream); padding: 8rem 0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7 text-center">
+
+                <div class="ornament mb-4">⬥ ⬥ ⬥</div>
+
+                <div style="font-size: 5rem; color: var(--color-cognac); margin-bottom: 2rem;">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+
+                <h1 class="display-4 mb-4">Дякуємо за замовлення!</h1>
+
+                <p class="lead mb-5">
+                    Ваша заявка успішно прийнята. Майстер зв'яжеться з вами протягом
+                    <strong>24 годин</strong> для обговорення деталей виготовлення.
+                </p>
+
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="{% url 'home' %}" class="btn btn-warning btn-lg">
+                        На головну
+                    </a>
+                    <a href="{% url 'catalog' %}" class="btn btn-hero-secondary btn-lg">
+                        Переглянути каталог
+                    </a>
+                </div>
+
+                <div class="ornament mt-5">⬥ ⬥ ⬥</div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
