@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+
+{% block title %}Контакти — Дубові бочки{% endblock %}
+
+{% block content %}
+
+<!-- Заголовок -->
+<section style="background-color: var(--color-cream-light); padding: 4rem 0 3rem;">
+    <div class="container text-center">
+        <p class="product-meta mb-2">Зв'язатись з майстром</p>
+        <h1 class="display-4 mb-3">Контакти</h1>
+        <p class="lead mb-0">Ми відповімо на ваше запитання протягом доби</p>
+    </div>
+</section>
+
+<!-- Карточки контактов -->
+<section style="background-color: var(--color-cream); padding: 4rem 0;">
+    <div class="container">
+        <div class="row g-4">
+
+            <div class="col-md-6 col-lg-3">
+                <div class="contact-card text-center">
+                    <i class="bi bi-telephone contact-icon"></i>
+                    <h5>Телефон</h5>
+                   <p class="mb-0"><a href="tel:+380 67 908 54 35" class="contact-link">+380 67 908 54 35</a></p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="contact-card text-center">
+                    <i class="bi bi-envelope contact-icon"></i>
+                    <h5>Email</h5>
+                    <p class="mb-0"><a href="mailto:peresunkodenis10@gmail.com" class="contact-link">peresunkodenis10@gmail.com</a></p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="contact-card text-center">
+                    <i class="bi bi-geo-alt contact-icon"></i>
+                    <h5>Майстерня</h5>
+                    <p class="mb-0">м. Тальне, Черкаська обл.,<br>вул. О. Шевцова</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="contact-card text-center">
+                    <i class="bi bi-clock contact-icon"></i>
+                    <h5>Графік</h5>
+                    <p class="mb-0">Пн-Сб: 9:00–18:00<br>Нд: вихідний</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Карта + информация о визите -->
+<section style="background-color: var(--color-cream-dark); padding: 5rem 0;">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+
+            <!-- Карта (квадратная) -->
+            <div class="col-lg-6">
+                <div class="map-wrapper">
+                    <iframe
+                        src="https://maps.google.com/maps?q=Тальне+вулиця+Олександра+Шевцова&hl=uk&z=15&output=embed"
+                        width="100%"
+                        height="450"
+                        style="border:0; display: block;"
+                        allowfullscreen=""
+                        loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+
+            <!-- Информация о визите -->
+            <div class="col-lg-6">
+                <p class="product-meta mb-2">Як нас знайти</p>
+                <h2 class="mb-4">Завітайте до майстерні</h2>
+                <p class="lead mb-4" style="color: var(--color-text-muted);">
+                    Будемо раді показати майстерню, процес виготовлення та допомогти
+                    обрати ідеальну бочку особисто.
+                </p>
+
+                <div class="visit-info">
+                    <div class="info-item">
+                        <i class="bi bi-geo-alt"></i>
+                        <div>
+                            <strong>Адреса</strong>
+                            <p>м. Тальне, Черкаська область, вул. Олександра Шевцова</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <i class="bi bi-calendar-check"></i>
+                        <div>
+                            <strong>Візит за домовленістю</strong>
+                            <p>Зателефонуйте нам заздалегідь — підготуємо все до вашого приходу</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <i class="bi bi-truck"></i>
+                        <div>
+                            <strong>Доставка</strong>
+                            <p>Відправляємо Новою Поштою по всій Україні</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Форма обратной связи -->
+<section style="background-color: var(--color-cream); padding: 4rem 0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="ornament mb-4">⬥ ⬥ ⬥</div>
+                <h2 class="text-center mb-4">Напишіть нам</h2>
+                <p class="text-center text-muted mb-5">
+                    Заповніть форму, і ми зв'яжемось з вами найближчим часом
+                </p>
+
+                {% if form.errors %}
+                <div class="alert alert-danger mb-4" style="background-color: #FAECE7; border-color: #D85A30; color: #712B13;">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <div>• {{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="id_name" class="form-label">{{ form.name.label }}</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_email" class="form-label">{{ form.email.label }}</label>
+                            {{ form.email }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="id_phone" class="form-label">{{ form.phone.label }}</label>
+                            {{ form.phone }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_subject" class="form-label">{{ form.subject.label }}</label>
+                            {{ form.subject }}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_message" class="form-label">{{ form.message.label }}</label>
+                        {{ form.message }}
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-warning btn-lg px-5">
+                            Надіслати повідомлення
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Контактные карточки */
+.contact-card {
+    background-color: var(--color-cream-light);
+    padding: 2rem 1.5rem;
+    border-radius: 4px;
+    border-top: 3px solid var(--color-gold);
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(44, 24, 16, 0.08);
+}
+
+.contact-icon {
+    font-size: 2.5rem;
+    color: var(--color-cognac);
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.contact-card h5 {
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 0.75rem;
+}
+
+.contact-link {
+    color: var(--color-oak-dark);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.contact-link:hover {
+    color: var(--color-cognac);
+}
+
+/* Карта */
+.map-wrapper {
+    box-shadow: 0 8px 24px rgba(44, 24, 16, 0.12);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* Информация о визите */
+.visit-info {
+    margin-top: 2rem;
+}
+
+.info-item {
+    display: flex;
+    gap: 1.25rem;
+    margin-bottom: 1.75rem;
+    align-items: flex-start;
+}
+
+.info-item i {
+    font-size: 1.75rem;
+    color: var(--color-cognac);
+    flex-shrink: 0;
+    width: 40px;
+    text-align: center;
+    padding-top: 0.25rem;
+}
+
+.info-item strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    color: var(--color-oak-dark);
+    margin-bottom: 0.25rem;
+}
+
+.info-item p {
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Форма */
+.form-label {
+    color: var(--color-text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+}
+</style>
+{% endblock %}

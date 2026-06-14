@@ -1,5 +1,7 @@
 from django import forms
 from .models import CustomOrder, ProductType, Purpose
+from .models import Review
+from .models import ContactMessage
 
 # Списки назначений по типу — используем в валидации
 BARREL_PURPOSES = [Purpose.VODKA, Purpose.WINE, Purpose.COGNAC, Purpose.WATER, Purpose.OTHER]
@@ -80,3 +82,68 @@ class CustomOrderForm(forms.ModelForm):
             )
 
         return cleaned_data
+
+class ReviewForm(forms.ModelForm):
+    """Форма для нового отзыва."""
+
+    class Meta:
+        model = Review
+        fields = ['author_name', 'rating', 'text']
+        widgets = {
+            'author_name': forms.TextInput(attrs={
+                'class': 'form-control form-control-lg',
+                'placeholder': 'Ваше ім\'я',
+            }),
+            'rating': forms.Select(
+                choices=[(i, '★' * i + '☆' * (5 - i)) for i in range(1, 6)],
+                attrs={'class': 'form-select form-select-lg'},
+            ),
+            'text': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 5,
+                'placeholder': 'Поділіться вашим досвідом — що замовляли, як працює бочка...',
+            }),
+        }
+        labels = {
+            'author_name': 'Ваше ім\'я',
+            'rating': 'Оцінка',
+            'text': 'Ваш відгук',
+        }
+
+
+class ContactForm(forms.ModelForm):
+    """Форма обратной связи."""
+
+    class Meta:
+        model = ContactMessage
+        fields = ['name', 'email', 'phone', 'subject', 'message']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control form-control-lg',
+                'placeholder': 'Іван Петренко',
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control form-control-lg',
+                'placeholder': 'ivan@example.com',
+            }),
+            'phone': forms.TextInput(attrs={
+                'class': 'form-control form-control-lg',
+                'placeholder': '+380 67 123 45 67',
+            }),
+            'subject': forms.TextInput(attrs={
+                'class': 'form-control form-control-lg',
+                'placeholder': 'Питання про бочку 50л',
+            }),
+            'message': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 5,
+                'placeholder': 'Ваше повідомлення...',
+            }),
+        }
+        labels = {
+            'name': 'Ваше ім\'я',
+            'email': 'Email',
+            'phone': 'Телефон (необов\'язково)',
+            'subject': 'Тема',
+            'message': 'Повідомлення',
+        }

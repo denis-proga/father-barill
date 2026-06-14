@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Відгуки клієнтів — Дубові бочки{% endblock %}
+
+{% block content %}
+
+<!-- Заголовок -->
+<section style="background-color: var(--color-cream-light); padding: 4rem 0 3rem;">
+    <div class="container text-center">
+        <p class="product-meta mb-2">Відгуки наших клієнтів</p>
+        <h1 class="display-4 mb-3">Що кажуть про нашу роботу</h1>
+
+        {% if avg_rating %}
+        <p class="lead mb-0">
+            <span style="font-size: 1.5rem; color: var(--color-cognac);">
+                {% for i in "12345" %}
+                    {% if forloop.counter <= avg_rating %}★{% else %}☆{% endif %}
+                {% endfor %}
+            </span>
+            <strong>{{ avg_rating }}</strong> на основі <strong>{{ reviews_count }}</strong> відгук{{ reviews_count|pluralize:"а,ів" }}
+        </p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Список отзывов -->
+<section style="background-color: var(--color-cream); padding: 4rem 0;">
+    <div class="container">
+
+        {% if reviews %}
+        <div class="row g-4">
+            {% for review in reviews %}
+            <div class="col-md-6">
+                <div class="review-card">
+                    <div class="review-rating mb-3">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.rating %}
+                                <i class="bi bi-star-fill" style="color: var(--color-cognac);"></i>
+                            {% else %}
+                                <i class="bi bi-star" style="color: var(--color-cream-dark);"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <p class="review-text">{{ review.text|linebreaks }}</p>
+                    <div class="review-author">
+                        — {{ review.author_name }},
+                        <span style="color: var(--color-text-muted); font-size: 0.9rem;">
+                            {{ review.created_at|date:"d.m.Y" }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <p class="lead text-muted">Поки що немає відгуків. Станьте першим!</p>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+<!-- Форма нового отзыва -->
+<section style="background-color: var(--color-cream-dark); padding: 4rem 0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="ornament mb-4">⬥ ⬥ ⬥</div>
+                <h2 class="text-center mb-4">Залишити свій відгук</h2>
+                <p class="text-center text-muted mb-5">
+                    Ваш відгук буде опубліковано після перевірки модератором
+                </p>
+
+                {% if form.errors %}
+                <div class="alert alert-danger mb-4" style="background-color: #FAECE7; border-color: #D85A30; color: #712B13;">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <div>• {{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <div class="mb-4">
+                        <label for="id_author_name" class="form-label">{{ form.author_name.label }}</label>
+                        {{ form.author_name }}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_rating" class="form-label">{{ form.rating.label }}</label>
+                        {{ form.rating }}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_text" class="form-label">{{ form.text.label }}</label>
+                        {{ form.text }}
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-warning btn-lg px-5">
+                            Надіслати відгук
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.review-card {
+    background-color: var(--color-cream-light);
+    padding: 2rem;
+    border-radius: 4px;
+    border-left: 3px solid var(--color-gold);
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.review-card:hover {
+    box-shadow: 0 8px 16px rgba(44, 24, 16, 0.08);
+    transform: translateY(-2px);
+}
+
+.review-rating {
+    font-size: 1.25rem;
+    letter-spacing: 0.2rem;
+}
+
+.review-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--color-oak-dark);
+}
+
+.review-author {
+    color: var(--color-text-muted);
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+.form-label {
+    color: var(--color-text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+}
+</style>
+{% endblock %}

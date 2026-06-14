@@ -78,14 +78,16 @@
                     </tbody>
                 </table>
 
-                <div class="d-grid gap-2">
-                    <button class="btn btn-warning btn-lg">
-                        <i class="bi bi-cart-plus"></i> Замовити
+                <form method="post" action="{% url 'cart_add' product.id %}" class="d-grid gap-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit" class="btn btn-warning btn-lg">
+                        <i class="bi bi-cart-plus"></i> Додати до кошика
                     </button>
                     <a href="{% url 'custom_order' %}" class="btn btn-hero-secondary btn-lg">
                         Замовити схожу з іншими параметрами
                     </a>
-                </div>
+                </form>
             </div>
 
         </div>

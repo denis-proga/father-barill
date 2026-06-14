@@ -3,10 +3,15 @@ from django.core.paginator import Paginator
 from .models import Product, ProductType, Purpose
 from django.shortcuts import redirect
 from django.contrib import messages
+from .models import Review
+from .forms import ReviewForm
 from .forms import CustomOrderForm
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
+from .forms import ContactForm
+from django.views.decorators.http import require_POST
+from .cart import Cart
 
 
 def home(request):
@@ -128,3 +133,124 @@ def custom_order(request):
 def custom_order_success(request):
     """Страница 'Дякуємо за замовлення'."""
     return render(request, 'shop/custom_order_success.html')
+
+
+def reviews(request):
+    """Список отзывов + форма добавления."""
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.is_approved = False  # На модерации
+            review.save()
+
+            # Email майстру про новий відгук
+            send_mail(
+                subject=f'Новий відгук від {review.author_name}',
+                message=f'Новий відгук на модерації:\n\n'
+                        f'Від: {review.author_name}\n'
+                        f'Оцінка: {review.rating}/5\n\n'
+                        f'{review.text}\n\n'
+                        f'Перейти до модерації: http://127.0.0.1:8000/admin/shop/review/{review.id}/change/',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[settings.MASTER_EMAIL],
+                fail_silently=False,
+            )
+
+            return redirect('review_success')
+    else:
+        form = ReviewForm()
+
+    # Показываем только одобренные отзывы
+    approved_reviews = Review.objects.filter(is_approved=True)
+
+    # Считаем статистику
+    avg_rating = None
+    if approved_reviews.exists():
+        total = sum(r.rating for r in approved_reviews)
+        avg_rating = round(total / approved_reviews.count(), 1)
+
+    context = {
+        'reviews': approved_reviews,
+        'form': form,
+        'avg_rating': avg_rating,
+        'reviews_count': approved_reviews.count(),
+    }
+    return render(request, 'shop/reviews.html', context)
+
+
+def review_success(request):
+    """Спасибо за отзыв."""
+    return render(request, 'shop/review_success.html')
+
+
+def contacts(request):
+    """Страница контактов с формой обратной связи."""
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            msg = form.save()
+
+            # Email майстру
+            send_mail(
+                subject=f'Нове повідомлення: {msg.subject}',
+                message=render_to_string('shop/emails/contact_to_master.txt', {'msg': msg}),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[settings.MASTER_EMAIL],
+                fail_silently=False,
+            )
+
+            return redirect('contacts_success')
+    else:
+        form = ContactForm()
+
+    return render(request, 'shop/contacts.html', {'form': form})
+
+
+def contacts_success(request):
+    """Спасибо за сообщение."""
+    return render(request, 'shop/contacts_success.html')
+
+@require_POST
+def cart_add(request, product_id):
+    """Додати товар до корзини (POST only)."""
+    product = get_object_or_404(Product, id=product_id, is_active=True)
+    cart = Cart(request)
+    quantity = int(request.POST.get('quantity', 1))
+    cart.add(product, quantity=quantity)
+    return redirect('cart_detail')
+
+
+def cart_remove(request, product_id):
+    """Видалити товар з корзини."""
+    product = get_object_or_404(Product, id=product_id)
+    cart = Cart(request)
+    cart.remove(product)
+    return redirect('cart_detail')
+
+
+@require_POST
+def cart_update(request, product_id):
+    """Оновити кількість товару."""
+    product = get_object_or_404(Product, id=product_id, is_active=True)
+    cart = Cart(request)
+    quantity = int(request.POST.get('quantity', 1))
+    if quantity > 0:
+        cart.add(product, quantity=quantity, override_quantity=True)
+    else:
+        cart.remove(product)
+    return redirect('cart_detail')
+
+
+def cart_detail(request):
+    """Сторінка корзини."""
+    cart = Cart(request)
+    return render(request, 'shop/cart.html', {'cart': cart})
+
+
+def checkout(request):
+    """Заглушка для оформлення замовлення — зробимо у наступній сесії."""
+    cart = Cart(request)
+    if len(cart) == 0:
+        return redirect('cart_detail')
+    return render(request, 'shop/checkout_placeholder.html', {'cart': cart})

@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+
+{% block title %}Кошик — Дубові бочки{% endblock %}
+
+{% block content %}
+
+<!-- Заголовок -->
+<section style="background-color: var(--color-cream-light); padding: 3rem 0 2rem;">
+    <div class="container text-center">
+        <p class="product-meta mb-2">Ваше замовлення</p>
+        <h1 class="display-4 mb-0">Кошик</h1>
+    </div>
+</section>
+
+<section style="background-color: var(--color-cream); padding: 4rem 0;">
+    <div class="container">
+    
+    {% if cart|length > 0 %}
+    <div class="row g-4">
+        
+        <!-- Список товаров -->
+        <div class="col-lg-8">
+            {% for item in cart %}
+            <div class="cart-item">
+                <div class="cart-item-image">
+                    {% if item.product.main_image %}
+                        <img src="{{ item.product.main_image.url }}" alt="{{ item.product.name }}">
+                    {% endif %}
+                </div>
+                
+                <div class="cart-item-info">
+                    <p class="product-meta mb-1">
+                        {{ item.product.get_product_type_display }} • {{ item.product.size_liters }}л
+                    </p>
+                    <h4 class="mb-2">
+                        <a href="{% url 'product_detail' item.product.id %}" style="color: var(--color-oak-dark); text-decoration: none;">
+                            {{ item.product.name }}
+                        </a>
+                    </h4>
+                    <p class="text-muted mb-3">Ціна за одиницю: <strong>{{ item.price }} ₴</strong></p>
+                    
+                    <div class="cart-item-controls">
+                        <form method="post" action="{% url 'cart_update' item.product.id %}" class="quantity-form">
+                            {% csrf_token %}
+                            <label class="me-2 small text-muted">Кількість:</label>
+                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="99" class="form-control form-control-sm" style="width: 70px;">
+                            <button type="submit" class="btn btn-sm btn-outline-secondary ms-2">Оновити</button>
+                        </form>
+                        
+                        <a href="{% url 'cart_remove' item.product.id %}" class="cart-remove-link">
+                            <i class="bi bi-trash"></i> Видалити
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="cart-item-total">
+                    <p class="text-muted small mb-1">Разом:</p>
+                    <p class="product-price mb-0">{{ item.total_price }} ₴</p>
+                </div>
+            </div>
+            {% endfor %}
+            
+            <div class="mt-4">
+                <a href="{% url 'catalog' %}" class="btn btn-hero-secondary">
+                    <i class="bi bi-arrow-left"></i> Продовжити покупки
+                </a>
+            </div>
+        </div>
+        
+        <!-- Summary sidebar -->
+        <div class="col-lg-4">
+            <div class="cart-summary">
+                <h3 class="mb-4">Разом до сплати</h3>
+                
+                <div class="summary-row">
+                    <span>Товарів:</span>
+                    <span><strong>{{ cart|length }}</strong></span>
+                </div>
+                
+                <div class="summary-row">
+                    <span>Доставка:</span>
+                    <span class="text-muted">Розрахується далі</span>
+                </div>
+                
+                <hr style="border-color: var(--color-gold); opacity: 0.4;">
+                
+                <div class="summary-row summary-total">
+                    <span>До сплати:</span>
+                    <span class="total-price">{{ cart.get_total_price }} ₴</span>
+                </div>
+                
+                <a href="{% url 'checkout' %}" class="btn btn-warning btn-lg w-100 mt-4">
+                    Оформити замовлення
+                </a>
+                
+                <p class="text-muted small text-center mt-3 mb-0">
+                    Безпечна оплата • Гарантія якості
+                </p>
+            </div>
+        </div>
+        
+    </div>
+    
+    {% else %}
+    <!-- Empty cart -->
+    <div class="text-center py-5">
+        <i class="bi bi-cart-x" style="font-size: 6rem; color: var(--color-cream-dark);"></i>
+        <h2 class="mt-4">Ваш кошик порожній</h2>
+        <p class="lead text-muted mb-4">Перегляньте каталог та додайте товари до кошика</p>
+        <a href="{% url 'catalog' %}" class="btn btn-warning btn-lg">
+            Переглянути каталог
+        </a>
+    </div>
+    {% endif %}
+    
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.cart-item {
+    display: flex;
+    gap: 1.5rem;
+    background-color: var(--color-cream-light);
+    padding: 1.5rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    align-items: flex-start;
+}
+
+.cart-item-image {
+    width: 140px;
+    height: 140px;
+    flex-shrink: 0;
+    background-color: white;
+    border-radius: 4px;
+    overflow: hidden;
+    padding: 0.5rem;
+}
+
+.cart-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.cart-item-info {
+    flex-grow: 1;
+}
+
+.cart-item-info h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+}
+
+.cart-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.quantity-form {
+    display: flex;
+    align-items: center;
+}
+
+.cart-remove-link {
+    color: #B82828;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: opacity 0.2s ease;
+}
+
+.cart-remove-link:hover {
+    opacity: 0.7;
+    color: #B82828;
+}
+
+.cart-item-total {
+    text-align: right;
+    flex-shrink: 0;
+    min-width: 120px;
+}
+
+.cart-item-total .product-price {
+    font-size: 1.5rem;
+}
+
+/* Summary sidebar */
+.cart-summary {
+    background-color: var(--color-cream-light);
+    padding: 2rem;
+    border-radius: 4px;
+    border-top: 3px solid var(--color-gold);
+    position: sticky;
+    top: 1rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    color: var(--color-text);
+}
+
+.summary-total {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--color-oak-dark);
+}
+
+.total-price {
+    color: var(--color-cognac);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .cart-item {
+        flex-direction: column;
+    }
+    .cart-item-image {
+        width: 100%;
+        height: 200px;
+    }
+    .cart-item-total {
+        text-align: left;
+    }
+}
+</style>
+{% endblock %}
