@@ -357,3 +357,283 @@ footer .text-muted {
     justify-content: center;
     padding: 0 4px;
 }
+
+/* ============================================================
+   Сповіщення про завантаженість майстра
+   ============================================================ */
+.workload-notice {
+    padding: 1.25rem 1.5rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.workload-notice i {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    padding-top: 0.1rem;
+}
+
+.workload-notice-busy {
+    background-color: #FBF3DC;
+    border-left: 3px solid var(--color-gold);
+    color: var(--color-oak-dark);
+}
+
+.workload-notice-busy i {
+    color: var(--color-gold-dark);
+}
+
+.workload-notice-very-busy {
+    background-color: #FAEAE0;
+    border-left: 3px solid var(--color-cognac);
+    color: var(--color-oak-dark);
+}
+
+.workload-notice-very-busy i {
+    color: var(--color-cognac);
+}
+
+.workload-notice-overloaded {
+    background-color: #FAECE7;
+    border-left: 3px solid #B82828;
+    color: #712B13;
+}
+
+.workload-notice-overloaded i {
+    color: #B82828;
+}
+
+.workload-notice strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    margin-bottom: 0.25rem;
+}
+
+/* ============================================================
+   MOBILE ADAPTATION
+   ============================================================ */
+
+/* Phones (до 768px) */
+@media (max-width: 768px) {
+
+    /* === Глобальное: уменьшаем большие шрифты === */
+    .display-1, .display-2 { font-size: 2.5rem !important; }
+    .display-3 { font-size: 2.25rem !important; }
+    .display-4 { font-size: 1.75rem !important; }
+    .display-5 { font-size: 1.5rem !important; }
+
+    .lead { font-size: 1rem !important; }
+
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.25rem; }
+
+    /* === Уменьшаем padding секций === */
+    section {
+        padding: 2.5rem 0 !important;
+    }
+
+    /* Контейнеры тоже не слишком прижаты к краям */
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* === Кнопки: тач-цель не меньше 44px === */
+    .btn {
+        min-height: 44px;
+        font-size: 0.95rem;
+    }
+
+    .btn-lg {
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem;
+    }
+
+    /* === Логотип в навбаре поменьше === */
+    .navbar-brand img {
+        height: 36px !important;
+    }
+
+    /* === Корзина: товары в столбик === */
+    .cart-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .cart-item-image {
+        width: 100%;
+        max-width: 180px;
+    }
+
+    .cart-item-info {
+        width: 100%;
+    }
+
+    /* === Форма-секции: меньше padding === */
+    .form-section,
+    .order-card,
+    .support-card {
+        padding: 1.5rem !important;
+    }
+
+    /* === Workload notice: компактнее === */
+    .workload-notice {
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .workload-notice strong {
+        font-size: 0.95rem;
+    }
+
+    /* === Step items в order_success: компактнее === */
+    .step-item {
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .step-item i {
+        font-size: 1.5rem;
+    }
+
+    /* === Cart summary: убираем sticky на мобиле === */
+    .cart-summary {
+        position: static !important;
+    }
+
+    /* === Hero ornament: меньше === */
+    .ornament {
+        font-size: 1rem;
+    }
+
+    /* === Form labels: компактнее === */
+    .form-label {
+        font-size: 0.8rem;
+    }
+
+    /* === Шаг-номер в формах меньше === */
+    .step-num {
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+    }
+
+    /* === Footer: центрируем всё === */
+    footer {
+        text-align: center;
+    }
+}
+
+
+/* Маленькие телефоны (до 480px) — дополнительная компактность */
+@media (max-width: 480px) {
+
+    .display-1, .display-2 { font-size: 2rem !important; }
+    .display-3 { font-size: 1.75rem !important; }
+    .display-4 { font-size: 1.5rem !important; }
+
+    section {
+        padding: 2rem 0 !important;
+    }
+
+    .form-section,
+    .order-card,
+    .support-card {
+        padding: 1.25rem !important;
+    }
+
+    /* Cart-badge виправляем — на маленькому екрані не торчить за межі іконки */
+    .cart-badge {
+        font-size: 0.6rem;
+        min-width: 16px;
+        height: 16px;
+        line-height: 16px;
+    }
+}
+
+
+/* ============================================================
+   Зробити модал зручним для мобільних
+   ============================================================ */
+@media (max-width: 576px) {
+    .modal-dialog {
+        margin: 0.75rem;
+    }
+
+    .modal-body {
+        padding: 1.25rem !important;
+        font-size: 0.95rem;
+    }
+
+    .modal-footer .btn {
+        width: 100%;
+        margin: 0.25rem 0;
+    }
+}
+
+/* ============================================================
+   Nova Poshta autocomplete
+   ============================================================ */
+
+.np-autocomplete-wrapper {
+    position: relative;
+}
+
+.np-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: white;
+    border: 1px solid var(--color-cream-dark);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    max-height: 320px;
+    overflow-y: auto;
+    display: none;
+    box-shadow: 0 8px 24px rgba(74, 47, 26, 0.12);
+}
+
+.np-item {
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-cream-light);
+    color: var(--color-text);
+    transition: background-color 0.15s;
+}
+
+.np-item:hover {
+    background-color: var(--color-cream-light);
+}
+
+.np-item:last-child {
+    border-bottom: none;
+}
+
+.np-item strong {
+    display: block;
+    color: var(--color-oak-dark);
+}
+
+.np-item-address {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-top: 0.2rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.np-item-empty {
+    padding: 1rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    text-align: center;
+}

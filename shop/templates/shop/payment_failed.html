@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Оплата не пройшла{% endblock %}
+
+{% block content %}
+
+<section style="background-color: var(--color-cream); padding: 6rem 0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7 text-center">
+
+                <div class="mb-4" style="font-size: 4rem; color: #B82828;">
+                    <i class="bi bi-x-circle"></i>
+                </div>
+
+                <h1 class="mb-3">Оплата не пройшла</h1>
+                <p class="lead text-muted mb-4">
+                    На жаль, оплата замовлення №{{ order.id }} не вдалася.
+                </p>
+                <p class="text-muted mb-5">
+                    Можливі причини: недостатньо коштів, банк відхилив операцію, або тимчасові проблеми зв'язку.
+                    Спробуйте ще раз або оберіть оплату при отриманні.
+                </p>
+
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="{% url 'cart_detail' %}" class="btn btn-warning btn-lg">
+                        Повернутися до кошика
+                    </a>
+                    <a href="{% url 'home' %}" class="btn btn-hero-secondary btn-lg">
+                        На головну
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

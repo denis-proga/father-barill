@@ -2,6 +2,7 @@ from django import forms
 from .models import CustomOrder, ProductType, Purpose
 from .models import Review
 from .models import ContactMessage
+from .models import Order
 
 # Списки назначений по типу — используем в валидации
 BARREL_PURPOSES = [Purpose.VODKA, Purpose.WINE, Purpose.COGNAC, Purpose.WATER, Purpose.OTHER]
@@ -147,3 +148,64 @@ class ContactForm(forms.ModelForm):
             'subject': 'Тема',
             'message': 'Повідомлення',
         }
+
+
+class CheckoutForm(forms.ModelForm):
+    """Форма оформления заказа."""
+
+    class Meta:
+        model = Order
+        fields = [
+            'customer_name', 'customer_phone', 'customer_email',
+            'delivery_city', 'delivery_branch',
+            'payment_method', 'customer_note',
+        ]
+        widgets = {
+            'customer_name': forms.TextInput(attrs={
+                'class': 'form-control form-control-lg',
+                'placeholder': 'Іван Петренко',
+            }),
+            'customer_phone': forms.TextInput(attrs={
+                'class': 'form-control form-control-lg',
+                'placeholder': '+380 67 123 45 67',
+            }),
+            'customer_email': forms.EmailInput(attrs={
+                'class': 'form-control form-control-lg',
+                'placeholder': 'ivan@example.com',
+            }),
+            'delivery_city': forms.TextInput(attrs={
+                'class': 'form-control form-control-lg',
+                'placeholder': 'Київ',
+            }),
+            'delivery_branch': forms.TextInput(attrs={
+                'class': 'form-control form-control-lg',
+                'placeholder': 'Відділення №3, вул. Хрещатик 22',
+            }),
+            'payment_method': forms.Select(attrs={
+                'class': 'form-select form-select-lg',
+            }),
+            'customer_note': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Особливі побажання щодо доставки або замовлення...',
+            }),
+        }
+        labels = {
+            'customer_name': 'Ваше ім\'я',
+            'customer_phone': 'Номер телефону',
+            'customer_email': 'Email',
+            'delivery_city': 'Місто',
+            'delivery_branch': 'Відділення Нової Пошти',
+            'payment_method': 'Спосіб оплати',
+            'customer_note': 'Коментар до замовлення',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Тепер обидва способи доступні
+        self.fields['payment_method'].choices = [
+            (Order.PaymentMethod.LIQPAY, '💳 Картка онлайн (Visa/Mastercard через LiqPay)'),
+            (Order.PaymentMethod.COD, '📦 Накладений платіж (на Нову Пошту)'),
+        ]
+        self.fields['payment_method'].initial = Order.PaymentMethod.LIQPAY
+        self.fields['customer_note'].required = False

@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ product.name }} — Дубові бочки{% endblock %}
+{% load static %}
+
+{% block meta_description %}{{ product.name }} ручної роботи об'ємом {{ product.size_liters }} літрів{% if product.purpose %} для {{ product.get_purpose_display|lower }}{% endif %}. Ціна {{ product.price }} ₴. Доставка Новою Поштою.{% endblock %}
+
+{% block og_title %}{{ product.name }} ({{ product.size_liters }}л) — Дубові бочки{% endblock %}
+
+{% block og_description %}{{ product.description|truncatewords:25 }}{% endblock %}
+
+{% block og_image %}{% if product.main_image %}{{ request.scheme }}://{{ request.get_host }}{{ product.main_image.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/og-default.jpg' %}{% endif %}{% endblock %}
+
+{% block og_type %}product{% endblock %}
 
 {% block content %}
 
@@ -78,11 +88,21 @@
                     </tbody>
                 </table>
 
+                {% if workload.title %}
+                <div class="workload-notice workload-notice-{{ workload.level|cut:'_' }} mb-3">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <div>
+                        <strong>{{ workload.title }}</strong>
+                        {{ workload.message }}
+                    </div>
+                </div>
+                {% endif %}
+
                 <form method="post" action="{% url 'cart_add' product.id %}" class="d-grid gap-2">
                     {% csrf_token %}
                     <input type="hidden" name="quantity" value="1">
-                    <button type="submit" class="btn btn-warning btn-lg">
-                        <i class="bi bi-cart-plus"></i> Додати до кошика
+                    <button type="submit" class="btn btn-warning btn-lg" {% if not workload.can_order %}disabled{% endif %}>
+                        {% if workload.can_order %}<i class="bi bi-cart-plus"></i> Додати до кошика{% else %}Прийом замовлень тимчасово припинено{% endif %}
                     </button>
                     <a href="{% url 'custom_order' %}" class="btn btn-hero-secondary btn-lg">
                         Замовити схожу з іншими параметрами

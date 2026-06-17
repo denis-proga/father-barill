@@ -1,0 +1,345 @@
+{% extends 'base.html' %}
+
+{% block title %}Оформлення замовлення{% endblock %}
+
+{% block content %}
+
+<section style="background-color: var(--color-cream-light); padding: 3rem 0 2rem;">
+    <div class="container text-center">
+        <p class="product-meta mb-2">Крок 2 з 2</p>
+        <h1 class="display-4 mb-0">Оформлення замовлення</h1>
+    </div>
+</section>
+
+<section style="background-color: var(--color-cream); padding: 4rem 0;">
+    <div class="container">
+        <div class="row g-4">
+
+            <!-- Форма -->
+            <div class="col-lg-8">
+                {% if form.errors %}
+                <div class="alert alert-danger mb-4" style="background-color: #FAECE7; border-color: #D85A30; color: #712B13;">
+                    <strong>Будь ласка, перевірте форму:</strong>
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <div>• {{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Контактные данные -->
+                    <div class="form-section mb-4">
+                        <h3 class="mb-4"><span class="step-num">1</span> Контактні дані</h3>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="id_customer_name" class="form-label">{{ form.customer_name.label }}</label>
+                                {{ form.customer_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_customer_phone" class="form-label">{{ form.customer_phone.label }}</label>
+                                {{ form.customer_phone }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_customer_email" class="form-label">{{ form.customer_email.label }}</label>
+                                {{ form.customer_email }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Доставка -->
+                    <div class="form-section mb-4">
+                        <h3 class="mb-4"><span class="step-num">2</span> Доставка Новою Поштою</h3>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="id_delivery_city" class="form-label">{{ form.delivery_city.label }}</label>
+                                <div class="np-autocomplete-wrapper">
+                                    {{ form.delivery_city }}
+                                    <div id="np-cities-dropdown" class="np-dropdown"></div>
+                                </div>
+                                <div class="form-text">Почніть вводити назву міста (мінімум 2 літери)</div>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="id_delivery_branch" class="form-label">{{ form.delivery_branch.label }}</label>
+                                <div class="np-autocomplete-wrapper">
+                                    {{ form.delivery_branch }}
+                                    <div id="np-warehouses-dropdown" class="np-dropdown"></div>
+                                </div>
+                                <div class="form-text" id="np-warehouses-hint">Спочатку оберіть місто вище</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Оплата -->
+                    <div class="form-section mb-4">
+                        <h3 class="mb-4"><span class="step-num">3</span> Оплата та коментар</h3>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="id_payment_method" class="form-label">{{ form.payment_method.label }}</label>
+                                {{ form.payment_method }}
+                                <div class="form-text">Безпечна оплата карткою через LiqPay або готівкою при отриманні</div>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="id_customer_note" class="form-label">{{ form.customer_note.label }}</label>
+                                {{ form.customer_note }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-warning btn-lg w-100">
+                        Підтвердити замовлення на {{ cart.get_total_price }} ₴
+                    </button>
+
+                    <p class="text-muted text-center small mt-3">
+                        Натискаючи кнопку, ви підтверджуєте свою згоду на обробку персональних даних
+                    </p>
+                </form>
+            </div>
+
+            <!-- Сводка -->
+            <div class="col-lg-4">
+                <div class="cart-summary">
+                    <h3 class="mb-4">Ваше замовлення</h3>
+
+                    {% for item in cart %}
+                    <div class="summary-item">
+                        <div>
+                            <strong>{{ item.product.name }}</strong>
+                            <p class="text-muted small mb-0">{{ item.quantity }} × {{ item.price }} ₴</p>
+                        </div>
+                        <span>{{ item.total_price }} ₴</span>
+                    </div>
+                    {% endfor %}
+
+                    <hr style="border-color: var(--color-gold); opacity: 0.4;">
+
+                    <div class="summary-row">
+                        <span>Товарів:</span>
+                        <span><strong>{{ cart|length }}</strong></span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Доставка:</span>
+                        <span class="text-muted">За тарифами НП</span>
+                    </div>
+
+                    <hr style="border-color: var(--color-gold); opacity: 0.4;">
+
+                    <div class="summary-row summary-total">
+                        <span>До сплати:</span>
+                        <span class="total-price">{{ cart.get_total_price }} ₴</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script>
+(function() {
+    'use strict';
+
+    // ===== Элементы DOM =====
+    const cityInput = document.getElementById('id_delivery_city');
+    const cityDropdown = document.getElementById('np-cities-dropdown');
+    const warehouseInput = document.getElementById('id_delivery_branch');
+    const warehouseDropdown = document.getElementById('np-warehouses-dropdown');
+    const warehouseHint = document.getElementById('np-warehouses-hint');
+
+    // ===== Состояние =====
+    let currentCityRef = null;      // Ref выбранного города
+    let allWarehouses = [];         // Кэш отделений (загружаем 1 раз на город)
+    let cityDebounceTimer = null;   // Таймер debounce для города
+
+    // ============================================================
+    // ГОРОДА — autocomplete с поиском через API
+    // ============================================================
+
+    cityInput.addEventListener('input', function() {
+        const q = this.value.trim();
+
+        // Когда меняется город — сбрасываем выбор отделения
+        warehouseInput.value = '';
+        currentCityRef = null;
+        allWarehouses = [];
+        warehouseDropdown.innerHTML = '';
+        warehouseDropdown.style.display = 'none';
+        warehouseHint.textContent = 'Спочатку оберіть місто вище';
+
+        // Debounce — не дёргаем API при каждой букве, ждём 300мс пока юзер допишет
+        clearTimeout(cityDebounceTimer);
+
+        if (q.length < 2) {
+            cityDropdown.style.display = 'none';
+            return;
+        }
+
+        cityDebounceTimer = setTimeout(() => {
+            fetch(`/api/np/cities/?q=${encodeURIComponent(q)}`)
+                .then(r => r.json())
+                .then(data => renderCityDropdown(data.results || []))
+                .catch(err => console.error('Nova Poshta cities error:', err));
+        }, 300);
+    });
+
+    function renderCityDropdown(cities) {
+        if (cities.length === 0) {
+            cityDropdown.innerHTML = '<div class="np-item-empty">Місто не знайдено</div>';
+        } else {
+            cityDropdown.innerHTML = cities.map(c => `
+                <div class="np-item" data-ref="${c.ref}" data-name="${c.name}">
+                    <strong>${c.name}</strong>
+                    ${c.area ? `<div class="np-item-address">${c.area} область</div>` : ''}
+                </div>
+            `).join('');
+        }
+        cityDropdown.style.display = 'block';
+    }
+
+    // Клик по городу — сохраняем выбор и загружаем отделения
+    cityDropdown.addEventListener('click', function(e) {
+        const item = e.target.closest('.np-item');
+        if (!item || !item.dataset.ref) return;
+
+        cityInput.value = item.dataset.name;
+        currentCityRef = item.dataset.ref;
+        cityDropdown.style.display = 'none';
+
+        loadWarehouses(item.dataset.ref);
+    });
+
+    // ============================================================
+    // ВІДДІЛЕННЯ — загружаем все, потом фильтруем локально
+    // ============================================================
+
+    function loadWarehouses(cityRef) {
+        warehouseHint.textContent = 'Завантаження відділень...';
+        warehouseInput.disabled = true;
+
+        fetch(`/api/np/warehouses/?city_ref=${encodeURIComponent(cityRef)}`)
+            .then(r => r.json())
+            .then(data => {
+                allWarehouses = data.results || [];
+                warehouseInput.disabled = false;
+
+                if (allWarehouses.length === 0) {
+                    warehouseHint.textContent = 'У цьому місті немає відділень';
+                } else {
+                    warehouseHint.textContent = `Доступно ${allWarehouses.length} відділень — клікніть на поле або шукайте по номеру/адресі`;
+                }
+            })
+            .catch(err => {
+                console.error('Nova Poshta warehouses error:', err);
+                warehouseInput.disabled = false;
+                warehouseHint.textContent = 'Помилка завантаження. Спробуйте ще раз.';
+            });
+    }
+
+    // При фокусе — показываем все отделения
+    warehouseInput.addEventListener('focus', function() {
+        if (!currentCityRef || allWarehouses.length === 0) return;
+        renderWarehouseDropdown(allWarehouses);
+    });
+
+    // При вводе — фильтруем локально (без обращения к API)
+    warehouseInput.addEventListener('input', function() {
+        if (!currentCityRef) return;
+        const q = this.value.toLowerCase().trim();
+
+        const filtered = allWarehouses.filter(w =>
+            (w.name && w.name.toLowerCase().includes(q)) ||
+            (w.address && w.address.toLowerCase().includes(q))
+        );
+        renderWarehouseDropdown(filtered);
+    });
+
+    function renderWarehouseDropdown(warehouses) {
+        if (warehouses.length === 0) {
+            warehouseDropdown.innerHTML = '<div class="np-item-empty">Відділення не знайдено</div>';
+        } else {
+            // Показываем максимум 50 за раз — больше не нужно, юзер всё равно отфильтрует
+            warehouseDropdown.innerHTML = warehouses.slice(0, 50).map(w => `
+                <div class="np-item" data-name="${w.name}">
+                    <strong>${w.name}</strong>
+                    ${w.address ? `<div class="np-item-address">${w.address}</div>` : ''}
+                </div>
+            `).join('');
+        }
+        warehouseDropdown.style.display = 'block';
+    }
+
+    warehouseDropdown.addEventListener('click', function(e) {
+        const item = e.target.closest('.np-item');
+        if (!item || !item.dataset.name) return;
+
+        warehouseInput.value = item.dataset.name;
+        warehouseDropdown.style.display = 'none';
+    });
+
+    // ============================================================
+    // Закрываем dropdowns при клике вне
+    // ============================================================
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.np-autocomplete-wrapper')) {
+            cityDropdown.style.display = 'none';
+            warehouseDropdown.style.display = 'none';
+        }
+    });
+})();
+</script>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.form-section {
+    background-color: var(--color-cream-light);
+    padding: 2rem;
+    border-radius: 4px;
+    border-left: 3px solid var(--color-gold);
+}
+
+.step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background-color: var(--color-cognac);
+    color: white;
+    border-radius: 50%;
+    font-family: 'Playfair Display', serif;
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.form-label {
+    color: var(--color-text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+}
+
+.form-text {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    margin-top: 0.4rem;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(74, 47, 26, 0.08);
+    gap: 1rem;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+</style>
+{% endblock %}

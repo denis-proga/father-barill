@@ -254,7 +254,7 @@ class Order(models.Model):
     """Замовлення з звичайного каталогу (не індивідуальне)."""
 
     class Status(models.TextChoices):
-        PENDING = 'pending', 'Очікує оплати'
+        PENDING = 'pending', 'Нове замовлення'
         PAID = 'paid', 'Оплачено'
         IN_PROGRESS = 'in_progress', 'В обробці'
         SHIPPED = 'shipped', 'Відправлено'

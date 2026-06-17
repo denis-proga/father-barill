@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'shop',
+    'django.contrib.sitemaps',
 ]
 
 MIDDLEWARE = [
@@ -64,6 +65,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'shop.context_processors.cart',
+                'shop.context_processors.workload',
             ],
         },
     },
@@ -149,3 +151,19 @@ DEFAULT_FROM_EMAIL = 'orders@father-barill.com.ua'
 
 # Email майстра (куди приходять замовлення)
 MASTER_EMAIL = config('MASTER_EMAIL', default='master@example.com')
+
+# ============================================================
+# LiqPay
+# ============================================================
+
+LIQPAY_PUBLIC_KEY = config('LIQPAY_PUBLIC_KEY', default='')
+LIQPAY_PRIVATE_KEY = config('LIQPAY_PRIVATE_KEY', default='')
+LIQPAY_SANDBOX = config('LIQPAY_SANDBOX', default=True, cast=bool)
+LIQPAY_CHECKOUT_URL = 'https://www.liqpay.ua/api/3/checkout'
+
+# ============================================================
+# Nova Poshta API
+# ============================================================
+
+NOVAPOSHTA_API_KEY = config('NOVAPOSHTA_API_KEY', default='')
+NOVAPOSHTA_API_URL = 'https://api.novaposhta.ua/v2.0/json/'

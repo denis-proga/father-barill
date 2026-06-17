@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-{% block title %}Замовити свою бочку — індивідуальне замовлення{% endblock %}
+{% block title %}Замовити бочку чи діжку на ваші параметри | Дубові бочки{% endblock %}
+
+{% block meta_description %}Замовте дубову бочку або діжку за вашими параметрами — об'єм, призначення, особливі побажання. Майстер виготовить ваш індивідуальний виріб.{% endblock %}
 
 {% block content %}
 
@@ -32,7 +34,17 @@
                 
                 <form method="post" novalidate>
                     {% csrf_token %}
-                    
+
+                    {% if workload.title %}
+                    <div class="workload-notice workload-notice-{{ workload.level|cut:'_' }} mb-4">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <div>
+                            <strong>{{ workload.title }}</strong>
+                            {{ workload.message }}
+                        </div>
+                    </div>
+                    {% endif %}
+
                     <!-- Секция 1: Что хотите? -->
                     <div class="form-section mb-5">
                         <h3 class="mb-4"><span class="step-num">1</span> Що ви хочете замовити?</h3>
@@ -91,8 +103,8 @@
                     
                     <!-- Submit -->
                     <div class="text-center mt-5">
-                        <button type="submit" class="btn btn-warning btn-lg px-5">
-                            Відправити замовлення
+                        <button type="submit" class="btn btn-warning btn-lg px-5" {% if not workload.can_order %}disabled{% endif %}>
+                            {% if workload.can_order %}Відправити замовлення{% else %}Прийом замовлень тимчасово припинено{% endif %}
                         </button>
                         <p class="text-muted mt-3 small">
                             Ми зв'яжемося з вами протягом 24 годин для уточнення деталей

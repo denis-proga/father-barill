@@ -5,6 +5,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Дубові бочки та діжки{% endblock %}</title>
+        <!-- ============== SEO Meta ============== -->
+    <meta name="description" content="{% block meta_description %}Ручне виробництво дубових бочок та діжок з 2003 року. Виготовляємо на замовлення для вина, коньяку, горілки, квашення. Доставка Новою Поштою по Україні.{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}дубові бочки, діжки, бочка для вина, бочка для коньяку, бочка для горілки, виготовлення бочок, бондарська майстерня, Україна{% endblock %}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <!-- ============== Open Graph (Facebook, Telegram, WhatsApp) ============== -->
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:site_name" content="Дубові бочки">
+    <meta property="og:locale" content="uk_UA">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title" content="{% block og_title %}Дубові бочки — бондарська майстерня з 2003 року{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Ручне виробництво дубових бочок та діжок. Виготовляємо на замовлення.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/og-default.jpg' %}{% endblock %}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- ============== Twitter Card ============== -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}Дубові бочки{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Ручне виробництво дубових бочок та діжок з 2003 року.{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/og-default.jpg' %}{% endblock %}">
+
+    <!-- ============== Favicon ============== -->
+    <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
 
     <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
 
@@ -37,6 +62,7 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'catalog' %}">Каталог</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'custom_order' %}">Замовити бочку</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'reviews' %}">Відгуки</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contacts' %}">Контакти</a></li>
                     <li class="nav-item">
                         <a class="nav-link cart-link" href="{% url 'cart_detail' %}">
                             <i class="bi bi-bag"></i>
@@ -67,6 +93,12 @@
                 </div>
             </div>
             <hr style="border-color: var(--color-gold); opacity: 0.3;">
+            <div class="text-center mb-2">
+                <small class="text-muted">
+                    Технічні питання щодо сайту:
+                    <a href="{% url 'support' %}" style="color: var(--color-gold);">Підтримка</a>
+                </small>
+            </div>
             <div class="text-center small">
                 © 2026 Дубові бочки. Усі права захищені.
             </div>

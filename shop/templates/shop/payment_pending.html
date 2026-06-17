@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Очікуємо підтвердження оплати{% endblock %}
+
+{% block content %}
+
+<section style="background-color: var(--color-cream); padding: 6rem 0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7 text-center">
+
+                <div class="ornament mb-4">⬥ ⬥ ⬥</div>
+
+                <div class="mb-4" style="font-size: 4rem; color: var(--color-gold);">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+
+                <h1 class="mb-3">Очікуємо підтвердження</h1>
+                <p class="lead mb-4">
+                    Замовлення №{{ order.id }} обробляється
+                </p>
+                <p class="text-muted mb-5">
+                    Зазвичай це займає від кількох секунд до хвилини.
+                    Як тільки оплата буде підтверджена — ви отримаєте email на <strong>{{ order.customer_email }}</strong>.
+                </p>
+
+                <div class="spinner-border mb-4" style="color: var(--color-cognac);" role="status"></div>
+                <p class="small text-muted">Сторінка оновиться автоматично</p>
+
+                <div class="mt-4">
+                    <a href="{% url 'home' %}" class="btn btn-hero-secondary">На головну</a>
+                </div>
+
+                <div class="ornament mt-5">⬥ ⬥ ⬥</div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Авто-оновлення кожні 5 секунд щоб перевірити чи прийшов webhook
+    setTimeout(() => location.reload(), 5000);
+</script>
+{% endblock %}

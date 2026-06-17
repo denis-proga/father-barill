@@ -18,9 +18,19 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from shop import views as shop_views
+from django.contrib.sitemaps.views import sitemap
+from shop.sitemaps import StaticPagesSitemap, ProductSitemap
+
+sitemaps = {
+    'static': StaticPagesSitemap,
+    'products': ProductSitemap,
+}
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('robots.txt', shop_views.robots_txt),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
     path('', include('shop.urls')),  # все URL'ы приложения shop
 ]
 

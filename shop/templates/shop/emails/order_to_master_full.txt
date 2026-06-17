@@ -1,0 +1,39 @@
+Майстре, нове замовлення з каталогу!
+
+═══════════════════════════════════════════════
+ЗАМОВЛЕННЯ №{{ order.id }}
+═══════════════════════════════════════════════
+
+КЛІЄНТ:
+  Ім'я:    {{ order.customer_name }}
+  Телефон: {{ order.customer_phone }}
+  Email:   {{ order.customer_email }}
+
+ДОСТАВКА:
+  Місто:      {{ order.delivery_city }}
+  Відділення: {{ order.delivery_branch }}
+
+ТОВАРИ:
+{% for item in order.items.all %}  • {{ item.product.name }} ({{ item.product.get_product_type_display }}, {{ item.product.size_liters }}л)
+    {{ item.quantity }} × {{ item.price_at_purchase }} ₴ = {{ item.total_price }} ₴
+{% endfor %}
+─────────────────────────────────────
+ЗАГАЛЬНА СУМА: {{ order.total_price }} ₴
+─────────────────────────────────────
+
+СПОСІБ ОПЛАТИ: {{ order.get_payment_method_display }}
+{% if order.customer_note %}
+КОМЕНТАР КЛІЄНТА:
+{{ order.customer_note }}
+{% endif %}
+═══════════════════════════════════════════════
+Дата: {{ order.created_at|date:"d.m.Y H:i" }}
+
+Подивитися в адмінці:
+http://127.0.0.1:8000/admin/shop/order/{{ order.id }}/change/
+
+ДАЛЬШІ КРОКИ:
+  1. Зателефонувати клієнту для підтвердження
+  2. Підготувати товар до відправки
+  3. Створити ТТН у Новій Пошті
+  4. Додати ТТН до замовлення в адмінці

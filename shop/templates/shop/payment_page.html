@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Перехід до оплати — Замовлення №{{ order.id }}{% endblock %}
+
+{% block content %}
+
+<section style="background-color: var(--color-cream); padding: 6rem 0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7 text-center">
+
+                <div class="ornament mb-4">⬥ ⬥ ⬥</div>
+
+                <div class="mb-4" style="font-size: 4rem; color: var(--color-cognac);">
+                    <i class="bi bi-credit-card-2-front"></i>
+                </div>
+
+                <h1 class="mb-3">Переходимо до оплати...</h1>
+                <p class="lead text-muted mb-2">Замовлення №{{ order.id }} • <strong>{{ order.total_price }} ₴</strong></p>
+                <p class="text-muted small mb-5">Зачекайте, ви будете перенаправлені на безпечний сайт LiqPay</p>
+
+                <div class="spinner-border" style="color: var(--color-cognac); width: 3rem; height: 3rem;" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+
+                <form id="liqpay-form" method="post" action="{{ checkout_url }}" style="margin-top: 2rem;">
+                    <input type="hidden" name="data" value="{{ data }}">
+                    <input type="hidden" name="signature" value="{{ signature }}">
+                    <noscript>
+                        <button type="submit" class="btn btn-warning btn-lg">
+                            Перейти до оплати вручну
+                        </button>
+                    </noscript>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Авто-сабміт через 1.5 секунди (даємо побачити повідомлення)
+    setTimeout(() => {
+        document.getElementById('liqpay-form').submit();
+    }, 1500);
+</script>
+{% endblock %}

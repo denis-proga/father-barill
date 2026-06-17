@@ -51,18 +51,31 @@ class Cart:
         """
         Ітерація по корзині з підвантаженням об'єктів Product з БД.
         Дозволяє в шаблоні писати: {% for item in cart %} ... {{ item.product.name }}
+
+        ВАЖЛИВО: не мутуємо self.cart — створюємо нові dict-и для кожного item.
+        Інакше Decimal потрапить у сесію і не серіалізується в JSON.
         """
-        product_ids = self.cart.keys()
-        products = Product.objects.filter(id__in=product_ids)
+        product_ids = list(self.cart.keys())
+        products_by_id = {
+            str(product.id): product
+            for product in Product.objects.filter(id__in=product_ids)
+        }
 
-        cart = self.cart.copy()
-        for product in products:
-            cart[str(product.id)]['product'] = product
+        for product_id, item_data in self.cart.items():
+            # Пропускаємо товари яких більше немає в БД
+            if product_id not in products_by_id:
+                continue
 
-        for item in cart.values():
-            item['price'] = Decimal(item['price'])
-            item['total_price'] = item['price'] * item['quantity']
-            yield item
+            price = Decimal(item_data['price'])
+            quantity = item_data['quantity']
+
+            # Створюємо НОВИЙ dict — не торкаємось session data
+            yield {
+                'product': products_by_id[product_id],
+                'quantity': quantity,
+                'price': price,
+                'total_price': price * quantity,
+            }
 
     def __len__(self):
         """Загальна кількість одиниць товару (для лічильника в навбарі)."""
