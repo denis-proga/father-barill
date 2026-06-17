@@ -1,19 +1,23 @@
-# Виртуальное окружение
+# Python
+__pycache__/
+*.pyc
 .venv/
 venv/
 
-# Секреты
-.env
-
 # Django
-*.pyc
-__pycache__/
 db.sqlite3
 *.log
-media/
+local_settings.py
+staticfiles/   # ← добавь если нет
+media/         # ← добавь (медиа НЕ коммитим)
 
-# PyCharm
+# Environment
+.env
+.env.local
+
+# IDE
 .idea/
+.vscode/
 
 # OS
 .DS_Store
