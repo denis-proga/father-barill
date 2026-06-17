@@ -48,7 +48,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'cloudinary',
     'shop',
     'django.contrib.sitemaps',
 ]
@@ -188,3 +190,10 @@ LIQPAY_CHECKOUT_URL = 'https://www.liqpay.ua/api/3/checkout'
 
 NOVAPOSHTA_API_KEY = config('NOVAPOSHTA_API_KEY', default='')
 NOVAPOSHTA_API_URL = 'https://api.novaposhta.ua/v2.0/json/'
+
+CLOUDINARY_URL_VALUE = config('CLOUDINARY_URL', default='')
+
+if CLOUDINARY_URL_VALUE:
+    import cloudinary
+    cloudinary.config(cloudinary_url=CLOUDINARY_URL_VALUE)
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
