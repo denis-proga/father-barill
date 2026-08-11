@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
 from .models import Product, ProductType, Purpose
@@ -19,6 +21,20 @@ from django.views.decorators.csrf import csrf_exempt
 from .liqpay import generate_payment, verify_signature, parse_callback
 from django.http import JsonResponse
 from .novaposhta import search_cities, get_warehouses
+
+logger = logging.getLogger(__name__)
+
+
+def safe_send_mail(**kwargs):
+    """
+    Обгортка над send_mail, яка НЕ дозволяє помилці відправки листа
+    зламати обробку запиту (наприклад, якщо Resend/SMTP тимчасово недоступний).
+    Замовлення/відгук/повідомлення при цьому все одно зберігаються в БД.
+    """
+    try:
+        send_mail(**kwargs)
+    except Exception as e:
+        logger.error(f"Email sending failed (subject={kwargs.get('subject')!r}): {e}")
 
 
 def home(request):
@@ -113,7 +129,7 @@ def custom_order(request):
             order = form.save()
 
             # Відправляємо email майстру
-            send_mail(
+            safe_send_mail(
                 subject=f'Нове замовлення №{order.id} від {order.customer_name}',
                 message=render_to_string('shop/emails/order_to_master.txt', {'order': order}),
                 from_email=settings.DEFAULT_FROM_EMAIL,
@@ -122,7 +138,7 @@ def custom_order(request):
             )
 
             # Відправляємо підтвердження клієнту
-            send_mail(
+            safe_send_mail(
                 subject=f'Замовлення №{order.id} прийнято — Дубові бочки',
                 message=render_to_string('shop/emails/order_to_client.txt', {'order': order}),
                 from_email=settings.DEFAULT_FROM_EMAIL,
@@ -152,13 +168,16 @@ def reviews(request):
             review.save()
 
             # Email майстру про новий відгук
-            send_mail(
+            moderation_url = request.build_absolute_uri(
+                f'/admin/shop/review/{review.id}/change/'
+            )
+            safe_send_mail(
                 subject=f'Новий відгук від {review.author_name}',
                 message=f'Новий відгук на модерації:\n\n'
                         f'Від: {review.author_name}\n'
                         f'Оцінка: {review.rating}/5\n\n'
                         f'{review.text}\n\n'
-                        f'Перейти до модерації: http://127.0.0.1:8000/admin/shop/review/{review.id}/change/',
+                        f'Перейти до модерації: {moderation_url}',
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[settings.MASTER_EMAIL],
                 fail_silently=False,
@@ -199,7 +218,7 @@ def contacts(request):
             msg = form.save()
 
             # Email майстру
-            send_mail(
+            safe_send_mail(
                 subject=f'Нове повідомлення: {msg.subject}',
                 message=render_to_string('shop/emails/contact_to_master.txt', {'msg': msg}),
                 from_email=settings.DEFAULT_FROM_EMAIL,
@@ -303,7 +322,7 @@ def checkout(request):
 def send_order_emails(order):
     """Helper для відправки email при новому замовленні."""
     # Майстру
-    send_mail(
+    safe_send_mail(
         subject=f'Нове замовлення №{order.id} від {order.customer_name}',
         message=render_to_string('shop/emails/order_to_master_full.txt', {'order': order}),
         from_email=settings.DEFAULT_FROM_EMAIL,
@@ -312,7 +331,7 @@ def send_order_emails(order):
     )
 
     # Клієнту
-    send_mail(
+    safe_send_mail(
         subject=f'Замовлення №{order.id} прийнято — Дубові бочки',
         message=render_to_string('shop/emails/order_to_customer_full.txt', {'order': order}),
         from_email=settings.DEFAULT_FROM_EMAIL,
