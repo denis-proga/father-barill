@@ -158,16 +158,15 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Email налаштування
 # ============================================================
 
-# Development: листи виводяться у термінал (не відправляються реально)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# Production: коли буде Gmail SMTP — поміняємо на:
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 
 # Email відправника
 DEFAULT_FROM_EMAIL = 'orders@father-barill.com.ua'
