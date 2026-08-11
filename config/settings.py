@@ -149,7 +149,6 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Куди collectstatic зібере файли
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (загруженные пользователями)
 MEDIA_URL = '/media/'
@@ -191,9 +190,18 @@ LIQPAY_CHECKOUT_URL = 'https://www.liqpay.ua/api/3/checkout'
 NOVAPOSHTA_API_KEY = config('NOVAPOSHTA_API_KEY', default='')
 NOVAPOSHTA_API_URL = 'https://api.novaposhta.ua/v2.0/json/'
 
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 CLOUDINARY_URL_VALUE = config('CLOUDINARY_URL', default='')
 
 if CLOUDINARY_URL_VALUE:
     import cloudinary
     cloudinary.config(cloudinary_url=CLOUDINARY_URL_VALUE)
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    STORAGES["default"]["BACKEND"] = 'cloudinary_storage.storage.MediaCloudinaryStorage'
