@@ -149,6 +149,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Куди collectstatic зібере файли
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (загруженные пользователями)
 MEDIA_URL = '/media/'
