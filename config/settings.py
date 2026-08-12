@@ -168,7 +168,7 @@ else:
     }
 
 # Email відправника
-DEFAULT_FROM_EMAIL = 'orders@father-barill.com.ua'
+DEFAULT_FROM_EMAIL = 'onboarding@resend.dev'
 
 # Email майстра (куди приходять замовлення)
 MASTER_EMAIL = config('MASTER_EMAIL', default='master@example.com')
