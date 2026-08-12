@@ -128,21 +128,13 @@ def custom_order(request):
         if form.is_valid():
             order = form.save()
 
-            # Відправляємо email майстру
+            # Відправляємо email майстру (клієнту зараз НЕ відправляємо —
+            # без верифікованого домену Resend листи клієнтам все одно не дійдуть)
             safe_send_mail(
                 subject=f'Нове замовлення №{order.id} від {order.customer_name}',
                 message=render_to_string('shop/emails/order_to_master.txt', {'order': order}),
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[settings.MASTER_EMAIL],
-                fail_silently=False,
-            )
-
-            # Відправляємо підтвердження клієнту
-            safe_send_mail(
-                subject=f'Замовлення №{order.id} прийнято — Дубові бочки',
-                message=render_to_string('shop/emails/order_to_client.txt', {'order': order}),
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[order.customer_email],
                 fail_silently=False,
             )
 
@@ -320,22 +312,16 @@ def checkout(request):
 
 
 def send_order_emails(order):
-    """Helper для відправки email при новому замовленні."""
-    # Майстру
+    """
+    Helper для відправки email при новому замовленні з каталогу.
+    Клієнту зараз НЕ відправляємо — без верифікованого домену Resend
+    листи стороннім адресам все одно блокуються.
+    """
     safe_send_mail(
         subject=f'Нове замовлення №{order.id} від {order.customer_name}',
         message=render_to_string('shop/emails/order_to_master_full.txt', {'order': order}),
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[settings.MASTER_EMAIL],
-        fail_silently=False,
-    )
-
-    # Клієнту
-    safe_send_mail(
-        subject=f'Замовлення №{order.id} прийнято — Дубові бочки',
-        message=render_to_string('shop/emails/order_to_customer_full.txt', {'order': order}),
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[order.customer_email],
         fail_silently=False,
     )
 
